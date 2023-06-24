@@ -17,3 +17,4 @@
 - lambda_builder.py, and utils.py are libraries for the client side.
 - The user should be able to edit files, add new functionality without the library having to spawn a new lambda function.
 - The only thing that will trigger a creation of a lambda function is when the user adds a new library to the project via pip or the requirements' dictionary.
+- lambda environments are built and cached locally in the "packages" folder
