@@ -10,7 +10,7 @@
 # Instructions:
 
 1. Make sure you're in an environment configured by the aws-cli and that the .aws folder is configured correctly. 
-2. Make sure you run python 3.10 or above to match the lambda version
+2. Make sure you run python 3.10 or above to match the lambda version, install all libaries in requirements.txt. 
 3. Read main.py to see examples and test the library. You will need to edit main.py for it to work: Read the comments in the first couple lines. 
 4. You should be able to run the main.py within the project folder with "python main.py"
 5. Read the comments in main.py to understand what the demo is doing. 
