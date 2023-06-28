@@ -1,30 +1,64 @@
-# Quickstart
-### only do this if you have pyenv installed. Otherwise skip to "Instructions"
-1. If you have pyenv installed, run "./install.sh"
-2. source venv/bin/activate
-3. read the comments in the first lines in: "main.py", change the role.
-4. run "python main.py" to see demo 
-5. To understand what the demo is doing read the comments in main.py 
+- This is in alpha build. 
+
+Bauplan lambda. 
+
+A small library enabling you to code in python on the cloud. 
+
+Before running make sure you run `aws configure` to get your local environment working on aws.
+
+You can install aws-cli with several package managers:
+
+MacOS/Linux:
+
+`brew install aws-cli`
+
+Other Linux:
+
+`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install`
+
+See here for more details on installing `aws-cli`: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
 
-# Instructions:
+Example code:
+```python
+    from lambda_builder import LambdaBuilder
+    
+    lambda_env = LambdaBuilder(
+        role_name="<A-ROLE-NAMe>", #must have persmissions to spawn lambda 
+        lambda_function_name="<A-FUNCTION-NAME>", 
+        region="A-REGION-NAME")
 
-1. Make sure you're in an environment configured by the aws-cli and that the .aws folder is configured correctly. 
-2. Make sure you run python 3.10 or above to match the lambda version
-3. Read main.py to see examples and test the library. You will need to edit main.py for it to work: Read the comments in the first couple lines. 
-4. You should be able to run the main.py within the project folder with "python main.py"
-5. Read the comments in main.py to understand what the demo is doing. 
+    @lambda_env.cloud_execute()
+    def fib(n: int) -> int:
+        if n < 0:
+            return 0
+        elif n <= 1:
+            return 1
+        else:
+            return fib(n - 1) + fib(n - 2)
 
-## Notes:
-- Docker was not used in this project. It can be, but I think it's even more powerful to deliver this library without docker as extra overhead. 
-- Ultimately, the objective here was to be minimally invasive with the library and keep the UX as close as possible to developing something on a standard python project.
-- The way the library is designed allows it to support a single global environment or multiple. Single is the default.
-- This library is a very rough experimental prototype.
-- Because it's a prototype there are many known issues with it including certain features it does not support and certain optimization issues. 
-- I can discuss these issues in the followup.   
-- main.py is an example 
-- lambda_function.py is the handler file in the lambda.
-- lambda_builder.py, and utils.py are libraries for the client side.
-- The user should be able to edit non library files, add new functionality without the library having to spawn a new lambda function.
-- The only thing that will trigger a creation of a lambda function is when the user adds a new library to the project via pip or the requirements' dictionary.
-- lambda environments are built and cached locally in the "packages" folder by default
+    #will spawn 9 aws lambdas in a recursive chain
+    print(fib(4))
+```
+    
+Async await syntax is supported to for concurrency. Lambdas will be running in parallel. 
+
+```python
+    from lambda_builder import LambdaBuilder
+    import asyncio
+
+    @lambda_env.aio_cloud_execute()
+    async def async_fib(n: int) -> int:
+        if n < 0:
+            return 0
+        elif n <= 1:
+            return n
+        else:
+            result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
+            return sum(result)
+```
+
+Submit a pull request or email heynairb@gmail.com for any issues. 
+    

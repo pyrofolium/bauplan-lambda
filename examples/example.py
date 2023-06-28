@@ -2,7 +2,7 @@ import asyncio
 
 from lambda_builder import LambdaBuilder
 import dill as pickle
-from other import return_two
+from examples.other import return_two
 
 # See constructor for options.
 # User creates multiple environments by instantiating this class.
