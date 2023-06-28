@@ -15,8 +15,6 @@ from utils import build_env, get_project_reqs, hash_env, get_context_from_file, 
     is_in_aws_lambda, find_file_with_function
 
 
-
-
 class LambdaBuilder:
     def __init__(self,
                  role_name: str,
@@ -27,7 +25,9 @@ class LambdaBuilder:
                  package_dir: str = "packages",
                  force_rebuild: bool = False,
                  mock_mode: bool = False,
-                 thread_count_per_lambda: int = 8):
+                 thread_count_per_lambda: int = 8,
+                 s3_bucket: Optional[str] = None,
+                 s3_key: Optional[str] = None):
         self.thread_count = thread_count_per_lambda
         self.mock_mode = mock_mode
         if mock_mode:
@@ -58,15 +58,19 @@ class LambdaBuilder:
                     lambda_zip_package = file.read()
                 role_arn: Optional[str] = boto3.client('iam').get_role(RoleName=role_name)['Role']['Arn']
                 print(f"creating function: {self.lambda_function_name}")
+                code_parameter = {
+                    "ZipFile": lambda_zip_package,
+                    "S3Bucket": s3_bucket if s3_bucket is not None else None,
+                    "S3Key": self.lambda_function_name if s3_bucket is not None else None,
+                }
+                code_parameter = {k: v for k, v in code_parameter.items() if v is not None}
                 response = self.lambda_client.create_function(
                     FunctionName=self.lambda_function_name,
                     Description="lambda executer",
                     Runtime=runtime,
                     Handler="lambda_function.lambda_handler",
                     MemorySize=256,
-                    Code={
-                        "ZipFile": lambda_zip_package
-                    },
+                    Code=code_parameter,
                     Timeout=300,
                     Role=role_arn
                 )

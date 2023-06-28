@@ -22,42 +22,47 @@ See here for more details on installing `aws-cli`: https://docs.aws.amazon.com/c
 
 
 Example code:
+
 ```python
-    from lambda_builder import LambdaBuilder
-    
-    lambda_env = LambdaBuilder(
-        role_name="<A-ROLE-NAMe>", #must have persmissions to spawn lambda 
-        lambda_function_name="<A-FUNCTION-NAME>", 
-        region="A-REGION-NAME")
+    from src import LambdaBuilder
 
-    @lambda_env.cloud_execute()
-    def fib(n: int) -> int:
-        if n < 0:
-            return 0
-        elif n <= 1:
-            return 1
-        else:
-            return fib(n - 1) + fib(n - 2)
+lambda_env = LambdaBuilder(
+    role_name="<A-ROLE-NAMe>",  # must have persmissions to spawn lambda 
+    lambda_function_name="<A-FUNCTION-NAME>",
+    region="A-REGION-NAME",
+    runtime="python3.10")
 
-    #will spawn 9 aws lambdas in a recursive chain
-    print(fib(4))
+
+@lambda_env.cloud_execute()
+def fib(n: int) -> int:
+    if n < 0:
+        return 0
+    elif n <= 1:
+        return 1
+    else:
+        return fib(n - 1) + fib(n - 2)
+
+
+# will spawn 9 aws lambdas in a recursive chain
+print(fib(4))
 ```
     
-Async await syntax is supported to for concurrency. Lambdas will be running in parallel. 
+Async await syntax is supported to for concurrency. Lambdas will be running in parallel.
 
 ```python
-    from lambda_builder import LambdaBuilder
-    import asyncio
+    from src import LambdaBuilder
+import asyncio
 
-    @lambda_env.aio_cloud_execute()
-    async def async_fib(n: int) -> int:
-        if n < 0:
-            return 0
-        elif n <= 1:
-            return n
-        else:
-            result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
-            return sum(result)
+
+@lambda_env.aio_cloud_execute()
+async def async_fib(n: int) -> int:
+    if n < 0:
+        return 0
+    elif n <= 1:
+        return n
+    else:
+        result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
+        return sum(result)
 ```
 
 Submit a pull request or email heynairb@gmail.com for any issues. 
