@@ -2,7 +2,7 @@
 
 # Bauplan lambda. 
 
-## A small library enabling you to code in python on the cloud. 
+#### A small library enabling you to code in python on the cloud. 
 
 Before running make sure you run `aws configure` to get your local environment working on aws.
 
