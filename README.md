@@ -26,7 +26,7 @@ See here for more details on installing `aws-cli`: https://docs.aws.amazon.com/c
 Example code:
 
 ```python
-    from src import LambdaBuilder
+from src import LambdaBuilder
 
 lambda_env = LambdaBuilder(
     role_name="<A-ROLE-NAMe>",  # must have persmissions to spawn lambda 
@@ -52,7 +52,7 @@ print(fib(4))
 Async await syntax is supported to for concurrency. Lambdas will be running in parallel.
 
 ```python
-    from src import LambdaBuilder
+from src import LambdaBuilder
 import asyncio
 
 
@@ -61,7 +61,7 @@ async def async_fib(n: int) -> int:
     if n < 0:
         return 0
     elif n <= 1:
-        return n
+        return 1
     else:
         result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
         return sum(result)
