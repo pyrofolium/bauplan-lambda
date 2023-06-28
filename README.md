@@ -26,7 +26,7 @@ See here for more details on installing `aws-cli`: https://docs.aws.amazon.com/c
 Example code:
 
 ```python
-from src import LambdaBuilder
+from bauplan.lambda_builder import LambdaBuilder
 
 lambda_env = LambdaBuilder(
     role_name="<A-ROLE-NAMe>",  # must have persmissions to spawn lambda 
@@ -52,7 +52,7 @@ print(fib(4))
 Async await syntax is supported to for concurrency. Lambdas will be running in parallel.
 
 ```python
-from src import LambdaBuilder
+from bauplan.lambda_builder import LambdaBuilder
 import asyncio
 
 

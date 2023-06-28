@@ -1,6 +1,6 @@
 import asyncio
 
-from src import LambdaBuilder
+from src.bauplan.lambda_builder import LambdaBuilder
 import dill as pickle
 from examples.other import return_two
 
