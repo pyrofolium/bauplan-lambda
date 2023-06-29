@@ -42,7 +42,7 @@ class LambdaBuilder:
             does_lambda_exist_in_aws = self.lambda_function_name in lambda_functions
             was_package_built = os.path.exists(f"{package_dir}/{self.package_hash}")
             was_pacakge_zipped = os.path.exists(f"{package_dir}/{self.package_hash}.zip")
-            should_rebuild = not was_package_built or not was_pacakge_zipped or force_rebuild or not does_lambda_exist_in_aws
+            should_rebuild = not was_package_built or not was_pacakge_zipped or force_rebuild  # or not does_lambda_exist_in_aws
             if should_rebuild and was_package_built:
                 shutil.rmtree(f"{package_dir}/{self.package_hash}")
             if should_rebuild and was_pacakge_zipped:
@@ -53,17 +53,24 @@ class LambdaBuilder:
                 print("building python environment")
                 build_env(self.package_hash, requirements=requirements, package_dir=package_dir)
                 print("finished creating python environment")
+            if not does_lambda_exist_in_aws or should_rebuild:
                 zip_file_path = os.path.join(f"{package_dir}", f"{self.package_hash}.zip")
                 with open(zip_file_path, 'rb') as file:
                     lambda_zip_package = file.read()
                 role_arn: Optional[str] = boto3.client('iam').get_role(RoleName=role_name)['Role']['Arn']
                 print(f"creating function: {self.lambda_function_name}")
                 code_parameter = {
-                    "ZipFile": lambda_zip_package,
+                    "ZipFile": lambda_zip_package if s3_bucket is None else None,
                     "S3Bucket": s3_bucket if s3_bucket is not None else None,
-                    "S3Key": self.lambda_function_name if s3_bucket is not None else None,
+                    "S3Key": f"{self.lambda_function_name}-{self.package_hash}.zip" if s3_bucket is not None else None,
                 }
                 code_parameter = {k: v for k, v in code_parameter.items() if v is not None}
+
+                if s3_bucket is not None:
+                    s3_client = boto3.client('s3')
+                    s3_client.upload_file(zip_file_path, s3_bucket,
+                                          f"{self.lambda_function_name}-{self.package_hash}.zip")
+
                 response = self.lambda_client.create_function(
                     FunctionName=self.lambda_function_name,
                     Description="lambda executer",

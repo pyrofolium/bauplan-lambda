@@ -72,8 +72,9 @@ def build_env(package_hash: str, requirements: Requirements, package_dir="packag
                     [install_package(package, version) for package, version in requirements.items()]
                     with change_directory("../"):
                         with change_directory("../"):
-                            filename = "src/bauplan/lambda_function.py"
-                            shutil.copy2(filename, os.path.join(f"{package_dir}/{package_hash}", filename))
+                            filename = "lambda_function.py"
+                            pathname = os.path.join("src/bauplan", filename)
+                            shutil.copy2(pathname, os.path.join(f"{package_dir}/{package_hash}", filename))
                 if did_previous_build_fail or archive_does_not_exist or package_does_not_exist:
                     with change_directory("../"):
                         zip_directory(f"./{package_hash}", f"{package_hash}.zip")
