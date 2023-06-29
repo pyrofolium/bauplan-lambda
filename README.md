@@ -29,9 +29,9 @@ Example code:
 from bauplan.lambda_builder import LambdaBuilder
 
 lambda_env = LambdaBuilder(
-    role_name="<A-ROLE-NAMe>",  # must have persmissions to spawn lambda 
+    role_name="<A-ROLE-NAME>",  # must have persmissions to spawn lambda 
     lambda_function_name="<A-FUNCTION-NAME>",
-    region="A-REGION-NAME",
+    region="<A-REGION-NAME>",
     runtime="python3.10")
 
 
