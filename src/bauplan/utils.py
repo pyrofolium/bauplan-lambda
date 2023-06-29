@@ -1,13 +1,15 @@
 import ast
 import hashlib
+import io
 import os
 import shutil
 import subprocess
 import sys
 from contextlib import contextmanager
 import zipfile
-from typing import List, Union, Optional, Dict, Set
+from typing import List, Union, Optional, Dict, Set, TextIO
 import re
+import docker
 
 
 # for optimization these functions should be rewritten in C, C++ or Rust.
@@ -73,7 +75,7 @@ def build_env(package_hash: str, requirements: Requirements, package_dir="packag
                     with change_directory("../"):
                         with change_directory("../"):
                             filename = "lambda_function.py"
-                            pathname = os.path.join("src/bauplan", filename)
+                            pathname = os.path.join("", filename)
                             shutil.copy2(pathname, os.path.join(f"{package_dir}/{package_hash}", filename))
                 if did_previous_build_fail or archive_does_not_exist or package_does_not_exist:
                     with change_directory("../"):
@@ -181,3 +183,30 @@ def write_python_file_structure(path: str, file_structure: FileStructure) -> Non
 def is_in_aws_lambda() -> bool:
     return "AWS_LAMBDA_FUNCTION_NAME" in os.environ
     # return True #(for mocking)
+
+
+def generate_python310_docker(requirements: Dict[str, str]) -> TextIO:
+    return io.StringIO(
+        """
+        FROM public.ecr.aws/lambda/python:3.10
+
+        # Copy requirements.txt
+        # COPY requirements.txt ${LAMBDA_TASK_ROOT}
+
+        # Copy function code
+        COPY lambda_function.py ${LAMBDA_TASK_ROOT}
+
+        # Install the specified packages
+        
+        """
+        +
+        "\n".join([f"pip install {lib}=={version}" for lib, version in requirements])
+        +
+        """
+        
+        RUN pip install -r requirements.txt
+
+        # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
+        CMD [ "lambda_function.handler" ]
+        """
+    )

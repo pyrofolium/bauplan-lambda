@@ -11,7 +11,7 @@ import boto3
 import dill as pickle
 import inspect
 import asyncio
-from utils import build_env, get_project_reqs, hash_env, get_context_from_file, get_python_project_structure, \
+from src.bauplan.utils import build_env, get_project_reqs, hash_env, get_context_from_file, get_python_project_structure, \
     is_in_aws_lambda, find_file_with_function
 
 
