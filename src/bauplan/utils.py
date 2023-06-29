@@ -204,9 +204,13 @@ def generate_python310_docker(requirements: Dict[str, str]) -> TextIO:
         +
         """
         
-        RUN pip install -r requirements.txt
-
         # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
-        CMD [ "lambda_function.handler" ]
+        CMD [ "lambda_function.lambda_handler" ]
         """
     )
+
+
+def build_python310_docker(reqs: Dict[str, str]):
+    name = hash_env(reqs)
+    docker_file = generate_python310_docker(reqs)
+    pass
