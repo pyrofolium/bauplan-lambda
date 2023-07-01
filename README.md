@@ -49,7 +49,7 @@ def fib(n: int) -> int:
 print(fib(4))
 ```
     
-Async await syntax is supported to for concurrency. Lambdas will be running in parallel.
+Async await syntax is supported as well for concurrency. Lambdas will be running in parallel.
 
 ```python
 from bauplan.lambda_builder import LambdaBuilder
@@ -65,6 +65,8 @@ async def async_fib(n: int) -> int:
     else:
         result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
         return sum(result)
+
+asyncio.run(async_main())
 ```
 
 Submit a pull request or email heynairb@gmail.com for any issues. 
