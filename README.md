@@ -8,6 +8,8 @@
 
 Before running make sure you run `aws configure` to get your local environment working on aws.
 
+The library uses boto3 which requires the above command to create a .aws folder with credentials inside to work seemlessly. 
+
 You can install aws-cli with several package managers:
 
 MacOS/Linux:
