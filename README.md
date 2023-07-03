@@ -66,7 +66,7 @@ async def async_fib(n: int) -> int:
         result = await asyncio.gather(async_fib(n - 1), async_fib(n - 2))
         return sum(result)
 
-asyncio.run(async_main())
+asyncio.run(async_fib(4))
 ```
 
 Submit a pull request or email heynairb@gmail.com for any issues. 
